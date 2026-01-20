@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+        .success { background: rgba(0,255,0,0.2); }
+        .error { background: rgba(255,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <h1>🧪 Telegram Web App Test</h1>
+
+    <div id="status" class="info">Проверка...</div>
+
+    <div class="info">
+        <h3>Debug Info:</h3>
+        <div id="debug"></div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const debugDiv = document.getElementById('debug');
+
+        let debugInfo = '';
+
+        debugInfo += `<p><strong>window.Telegram exists:</strong> ${!!window.Telegram}</p>`;
+        debugInfo += `<p><strong>window.Telegram.WebApp exists:</strong> ${!!window.Telegram?.WebApp}</p>`;
+
+        if (window.Telegram?.WebApp) {
+            const tg = window.Telegram.WebApp;
+
+            statusDiv.className = 'info success';
+            statusDiv.innerHTML = '✅ Telegram Web App SDK загружен!';
+
+            debugInfo += `<p><strong>initData:</strong> ${tg.initData ? 'есть' : 'нет'}</p>`;
+            debugInfo += `<p><strong>User:</strong> ${JSON.stringify(tg.initDataUnsafe?.user || {})}</p>`;
+            debugInfo += `<p><strong>colorScheme:</strong> ${tg.colorScheme}</p>`;
+            debugInfo += `<p><strong>version:</strong> ${tg.version}</p>`;
+
+            // Expand and ready
+            tg.expand();
+            tg.ready();
+
+        } else {
+            statusDiv.className = 'info error';
+            statusDiv.innerHTML = '❌ Telegram Web App SDK НЕ загружен';
+        }
+
+        debugInfo += `<p><strong>User Agent:</strong> ${navigator.userAgent}</p>`;
+        debugInfo += `<p><strong>Location:</strong> ${window.location.href}</p>`;
+
+        debugDiv.innerHTML = debugInfo;
+    </script>
+</body>
+</html>
