@@ -2,25 +2,48 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Test Page</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
         }
         .info {
             background: rgba(255,255,255,0.1);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            word-break: break-word;
         }
-        .success { background: rgba(0,255,0,0.2); }
-        .error { background: rgba(255,0,0,0.2); }
+        .success { background: rgba(0,255,0,0.2); border: 1px solid rgba(0,255,0,0.4); }
+        .error { background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.4); }
+        h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        strong {
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -34,38 +57,74 @@
     </div>
 
     <script>
-        const statusDiv = document.getElementById('status');
-        const debugDiv = document.getElementById('debug');
+        // Wait for DOM to be ready
+        function init() {
+            const statusDiv = document.getElementById('status');
+            const debugDiv = document.getElementById('debug');
 
-        let debugInfo = '';
+            let debugInfo = '';
 
-        debugInfo += `<p><strong>window.Telegram exists:</strong> ${!!window.Telegram}</p>`;
-        debugInfo += `<p><strong>window.Telegram.WebApp exists:</strong> ${!!window.Telegram?.WebApp}</p>`;
+            try {
+                debugInfo += `<p><strong>window.Telegram exists:</strong> ${!!window.Telegram}</p>`;
+                debugInfo += `<p><strong>window.Telegram.WebApp exists:</strong> ${!!window.Telegram?.WebApp}</p>`;
 
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
+                if (window.Telegram?.WebApp) {
+                    const tg = window.Telegram.WebApp;
 
-            statusDiv.className = 'info success';
-            statusDiv.innerHTML = '✅ Telegram Web App SDK загружен!';
+                    statusDiv.className = 'info success';
+                    statusDiv.innerHTML = '✅ Telegram Web App SDK загружен!';
 
-            debugInfo += `<p><strong>initData:</strong> ${tg.initData ? 'есть' : 'нет'}</p>`;
-            debugInfo += `<p><strong>User:</strong> ${JSON.stringify(tg.initDataUnsafe?.user || {})}</p>`;
-            debugInfo += `<p><strong>colorScheme:</strong> ${tg.colorScheme}</p>`;
-            debugInfo += `<p><strong>version:</strong> ${tg.version}</p>`;
+                    debugInfo += `<p><strong>Platform:</strong> ${tg.platform || 'unknown'}</p>`;
+                    debugInfo += `<p><strong>Version:</strong> ${tg.version || 'unknown'}</p>`;
+                    debugInfo += `<p><strong>colorScheme:</strong> ${tg.colorScheme || 'unknown'}</p>`;
+                    debugInfo += `<p><strong>initData present:</strong> ${tg.initData ? 'YES' : 'NO'}</p>`;
+                    debugInfo += `<p><strong>initData length:</strong> ${tg.initData?.length || 0}</p>`;
 
-            // Expand and ready
-            tg.expand();
-            tg.ready();
+                    const user = tg.initDataUnsafe?.user;
+                    if (user) {
+                        debugInfo += `<p><strong>User ID:</strong> ${user.id}</p>`;
+                        debugInfo += `<p><strong>Username:</strong> @${user.username || 'none'}</p>`;
+                        debugInfo += `<p><strong>First Name:</strong> ${user.first_name || 'none'}</p>`;
+                    } else {
+                        debugInfo += `<p><strong>User:</strong> NO USER DATA</p>`;
+                    }
 
-        } else {
-            statusDiv.className = 'info error';
-            statusDiv.innerHTML = '❌ Telegram Web App SDK НЕ загружен';
+                    debugInfo += `<p><strong>isExpanded:</strong> ${tg.isExpanded}</p>`;
+                    debugInfo += `<p><strong>viewportHeight:</strong> ${tg.viewportHeight}px</p>`;
+                    debugInfo += `<p><strong>viewportStableHeight:</strong> ${tg.viewportStableHeight}px</p>`;
+
+                    // Expand and ready
+                    tg.expand();
+                    tg.ready();
+
+                    debugInfo += `<p style="margin-top:10px; color: #90EE90;"><strong>✓ Called tg.expand() and tg.ready()</strong></p>`;
+
+                } else {
+                    statusDiv.className = 'info error';
+                    statusDiv.innerHTML = '❌ Telegram Web App SDK НЕ загружен';
+                    debugInfo += `<p><strong>typeof window.Telegram:</strong> ${typeof window.Telegram}</p>`;
+                }
+
+                debugInfo += `<p><strong>Screen:</strong> ${window.screen.width}x${window.screen.height}</p>`;
+                debugInfo += `<p><strong>Window:</strong> ${window.innerWidth}x${window.innerHeight}</p>`;
+                debugInfo += `<p><strong>User Agent:</strong> ${navigator.userAgent.substring(0, 80)}...</p>`;
+                debugInfo += `<p><strong>Location:</strong> ${window.location.href}</p>`;
+
+            } catch (error) {
+                statusDiv.className = 'info error';
+                statusDiv.innerHTML = `❌ Error: ${error.message}`;
+                debugInfo += `<p><strong>Exception:</strong> ${error.toString()}</p>`;
+            }
+
+            debugDiv.innerHTML = debugInfo;
         }
 
-        debugInfo += `<p><strong>User Agent:</strong> ${navigator.userAgent}</p>`;
-        debugInfo += `<p><strong>Location:</strong> ${window.location.href}</p>`;
-
-        debugDiv.innerHTML = debugInfo;
+        // Run init when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
 </html>
