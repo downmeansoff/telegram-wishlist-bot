@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional
+from pydantic import BaseSettings
+from typing import Optional, List
 
 
 class Settings(BaseSettings):
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = [
+    BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:8000",
         "https://telegram-wishlist-62uawm0st-glebs-projects-f7cefa28.vercel.app",
@@ -48,11 +48,9 @@ class Settings(BaseSettings):
     CLOUDINARY_URL: Optional[str] = None
     SENTRY_DSN: Optional[str] = None
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        case_sensitive=True,
-        extra="allow"
-    )
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
 
     @property
     def is_production(self) -> bool:
