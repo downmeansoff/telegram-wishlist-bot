@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:3000",
         "http://localhost:8000",
+        "https://telegram-wishlist-62uawm0st-glebs-projects-f7cefa28.vercel.app",
+        "https://*.vercel.app",
     ]
 
     # File uploads

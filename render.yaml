@@ -1,0 +1,35 @@
+services:
+  # Backend API
+  - type: web
+    name: wishlist-backend
+    env: python
+    region: frankfurt
+    plan: free
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: POSTGRES_DB
+        sync: false
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: WEB_APP_URL
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+
+  # PostgreSQL Database
+  - type: pserv
+    name: wishlist-postgres
+    env: docker
+    plan: free
+    region: frankfurt
