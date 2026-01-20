@@ -17,17 +17,19 @@ router = Router()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, user: User):
-    """Handle /start command"""
-    welcome_text = f"""
+    """Handle /start command - opens Web App directly"""
+
+    # If Web App URL is available (HTTPS), open it directly
+    if settings.WEB_APP_URL.startswith("https://"):
+        # Send a simple message with Web App button that opens automatically
+        welcome_text = f"👋 <b>Привет, {user.first_name}!</b>\n\n🎁 Открываю твой список желаний..."
+        await message.answer(welcome_text, reply_markup=get_main_keyboard())
+    else:
+        # Fallback for development mode (localhost)
+        welcome_text = f"""
 👋 <b>Привет, {user.first_name}!</b>
 
 Добро пожаловать в <b>Wish List Bot</b> - твой личный менеджер желаний! 🎁
-
-Здесь ты можешь:
-✨ Создавать списки желаний
-🎯 Управлять приоритетами
-👥 Делиться списками с друзьями
-🎂 Создавать групповые списки для дней рождения
 
 <b>Основные команды:</b>
 • /add - Добавить желание
@@ -37,14 +39,8 @@ async def cmd_start(message: Message, user: User):
 
 <b>Быстрое добавление:</b>
 Просто напиши название желания, и я добавлю его в список!
-Например: "iPhone 15 Pro"
 """
-
-    # Add Web App info only for HTTPS
-    if settings.WEB_APP_URL.startswith("https://"):
-        welcome_text += "\n💡 Нажми кнопку ниже для полного функционала Web App!"
-
-    await message.answer(welcome_text, reply_markup=get_main_keyboard())
+        await message.answer(welcome_text, reply_markup=get_main_keyboard())
 
 
 @router.message(Command("help"))
