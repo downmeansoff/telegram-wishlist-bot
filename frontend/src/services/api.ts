@@ -1,8 +1,12 @@
 import axios from 'axios'
 
-// Use production URL if not running on localhost
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-const API_URL = import.meta.env.VITE_API_URL || (isLocalhost ? 'http://localhost:8000' : 'https://wishlist-backend-6eak.onrender.com')
+// Production API URL - hardcoded for reliability
+const PRODUCTION_API_URL = 'https://wishlist-backend-6eak.onrender.com'
+
+// Use production URL unless explicitly set to localhost via env var
+const API_URL = import.meta.env.VITE_API_URL || PRODUCTION_API_URL
+
+console.log('API URL:', API_URL) // Debug log
 
 const api = axios.create({
   baseURL: API_URL,
