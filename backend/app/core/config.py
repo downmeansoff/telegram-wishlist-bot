@@ -33,7 +33,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:8000",
         "https://telegram-wishlist-62uawm0st-glebs-projects-f7cefa28.vercel.app",
-        "https://*.vercel.app",
+        "https://telegram-wishlist-bot.vercel.app",
+        "https://web.telegram.org",
     ]
 
     # File uploads

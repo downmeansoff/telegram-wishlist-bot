@@ -34,13 +34,14 @@ app = FastAPI(
     redirect_slashes=False,  # Don't redirect /api/wishes to /api/wishes/
 )
 
-# Configure CORS
+# Configure CORS - allow all origins for Telegram Web App
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS + ["https://web.telegram.org"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 

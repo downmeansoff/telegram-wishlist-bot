@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
 from typing import List
+import logging
 
 from app.core.database import get_db
 from app.api.deps import get_current_user
@@ -14,6 +15,7 @@ from app.schemas.wish import (
     WishListResponse,
 )
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -105,16 +107,23 @@ async def create_wish(
     session: AsyncSession = Depends(get_db),
 ):
     """Create new wish"""
-    wish = Wish(
-        **wish_in.model_dump(),
-        user_id=current_user.id
-    )
+    logger.info(f"Creating wish for user {current_user.id}: {wish_in.title}")
 
-    session.add(wish)
-    await session.commit()
-    await session.refresh(wish)
+    try:
+        wish = Wish(
+            **wish_in.model_dump(),
+            user_id=current_user.id
+        )
 
-    return wish
+        session.add(wish)
+        await session.commit()
+        await session.refresh(wish)
+
+        logger.info(f"Wish created successfully: {wish.id}")
+        return wish
+    except Exception as e:
+        logger.error(f"Error creating wish: {e}", exc_info=True)
+        raise
 
 
 @router.put("/{wish_id}", response_model=WishSchema)
