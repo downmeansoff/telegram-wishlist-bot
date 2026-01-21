@@ -31,6 +31,7 @@ app = FastAPI(
     version=settings.VERSION,
     docs_url="/docs" if settings.is_development else None,
     redoc_url="/redoc" if settings.is_development else None,
+    redirect_slashes=False,  # Don't redirect /api/wishes to /api/wishes/
 )
 
 # Configure CORS
