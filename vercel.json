@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "cd frontend && npm install",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://wishlist-backend-6eak.onrender.com",
+    "VITE_TELEGRAM_BOT_USERNAME": "iiiwishlistbot"
+  }
+}
