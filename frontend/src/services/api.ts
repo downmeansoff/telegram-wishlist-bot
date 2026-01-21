@@ -6,7 +6,7 @@ const PRODUCTION_API_URL = 'https://wishlist-backend-6eak.onrender.com'
 // Use production URL unless explicitly set to localhost via env var
 const API_URL = import.meta.env.VITE_API_URL || PRODUCTION_API_URL
 
-console.log('API URL:', API_URL) // Debug log
+console.log('API URL:', API_URL, '- Build:', Date.now()) // Debug log
 
 const api = axios.create({
   baseURL: API_URL,
