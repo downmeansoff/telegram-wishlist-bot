@@ -1,10 +1,7 @@
 import axios from 'axios'
 
-// Production API URL - hardcoded for reliability
-const PRODUCTION_API_URL = 'https://wishlist-backend-6eak.onrender.com'
-
-// Use production URL unless explicitly set to localhost via env var
-const API_URL = import.meta.env.VITE_API_URL || PRODUCTION_API_URL
+// HARDCODED production API URL - ignore env vars completely
+const API_URL = 'https://wishlist-backend-6eak.onrender.com'
 
 console.log('API URL:', API_URL, '- Build:', Date.now()) // Debug log
 
