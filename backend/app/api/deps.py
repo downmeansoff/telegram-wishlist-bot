@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 from fastapi import Depends, HTTPException, status, Header
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,8 +29,9 @@ async def get_current_user(
     # Verify and parse init data
     parsed_data = verify_telegram_web_app_data(x_telegram_init_data)
 
-    # Get user data from parsed data
-    user_data = eval(parsed_data.get("user", "{}"))
+    # Get user data from parsed data (use json.loads instead of eval for safety)
+    user_json = parsed_data.get("user", "{}")
+    user_data = json.loads(user_json) if isinstance(user_json, str) else user_json
     telegram_id = user_data.get("id")
 
     if not telegram_id:
