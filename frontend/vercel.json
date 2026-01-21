@@ -1,6 +1,12 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "build",
+  "build": {
+    "env": {
+      "VITE_API_URL": "https://wishlist-backend-6eak.onrender.com",
+      "VITE_TELEGRAM_BOT_USERNAME": "iiiwishlistbot"
+    }
+  },
   "rewrites": [
     {
       "source": "/test.html",
