@@ -3,8 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import logging
 
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from aiogram.types import Update
+
 from app.core.config import settings
 from app.api import wishes, users, groups
+from app.bot.handlers import router as bot_router
+from app.bot.middleware import DatabaseMiddleware
 
 # Configure logging
 logging.basicConfig(
@@ -12,6 +18,12 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Initialize bot and dispatcher once at module level
+bot = Bot(token=settings.TELEGRAM_BOT_TOKEN, parse_mode=ParseMode.HTML)
+dp = Dispatcher()
+dp.include_router(bot_router)
+dp.update.middleware(DatabaseMiddleware())
 
 # Create FastAPI app
 app = FastAPI(
@@ -80,20 +92,12 @@ app.include_router(
 async def telegram_webhook(request: Request):
     """Telegram webhook endpoint"""
     try:
-        from aiogram import Bot, Dispatcher
-        from aiogram.types import Update
-        from app.bot.handlers import router
-
         # Get update data
         data = await request.json()
 
-        # Create bot instance
-        bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
-        dp = Dispatcher()
-        dp.include_router(router)
-
-        # Process update
-        await dp.feed_update(bot, Update(**data))
+        # Process update using global bot and dispatcher
+        update = Update(**data)
+        await dp.feed_update(bot, update)
 
         return {"ok": True}
 
