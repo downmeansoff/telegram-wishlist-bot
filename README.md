@@ -1,310 +1,216 @@
-# 🎁 Telegram Wish List Bot
+# Telegram Wish List Bot & Web App
 
-Полнофункциональный Telegram-бот с встроенным Web App для управления списками желаний.
+A full-stack Telegram product for creating, organizing, sharing, and reserving wish-list items through a bot and an embedded Telegram Web App.
 
-## 🌟 Возможности
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?logo=fastapi&logoColor=white)
+![aiogram](https://img.shields.io/badge/Telegram-aiogram_3-26A5E4?logo=telegram&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
 
-### Telegram Bot
-- 🤖 Команды: `/start`, `/add`, `/list`, `/share`
-- ⚡ Быстрое добавление желаний через текст
-- 📱 Inline-кнопки для запуска Web App
-- 🔔 Умные уведомления о днях рождения
+> Portfolio project demonstrating Telegram product development, FastAPI backend architecture, PostgreSQL persistence, Redis integration, Dockerized local environments, and a React/TypeScript Web App.
 
-### Web App
-- 🎨 Красивые карточки желаний с фото
-- 🔄 Drag & drop для изменения приоритета
-- 👥 Групповые списки для дарителей
-- 📊 Статистика и аналитика
-- 🔗 Автопарсинг ссылок (Ozon, Wildberries, AliExpress)
-- 🎯 Фильтры, поиск, категории
+## Product capabilities
 
-### Групповые функции
-- 👫 Создание групп друзей/семьи
-- 🎂 Календарь дней рождений
-- 🔒 Бронирование подарков (невидимо для получателя)
-- 💬 Обсуждение подарков
+### Telegram bot
 
-## 🏗️ Архитектура
+- `/start`, `/add`, `/list`, and `/share` flows
+- quick wish creation from messages
+- inline buttons for opening the Web App
+- birthday reminder workflows
 
+### Telegram Web App
+
+- wish cards with images and priorities
+- drag-and-drop ordering
+- search, filters, and categories
+- group wish lists
+- gift reservation without exposing the reservation to the recipient
+- statistics and basic analytics
+- link parsing for marketplace items
+
+### Group workflows
+
+- friend and family groups
+- birthday calendar
+- gift discussion and coordination
+- shared lists for gift selection
+
+## Architecture
+
+```mermaid
+flowchart LR
+    TG[Telegram client]
+    BOT[aiogram bot]
+    WEB[React / TypeScript Web App]
+    API[FastAPI backend]
+    DB[(PostgreSQL)]
+    CACHE[(Redis)]
+
+    TG --> BOT
+    TG --> WEB
+    BOT --> API
+    WEB --> API
+    API --> DB
+    API --> CACHE
 ```
-┌─────────────┐      ┌──────────────┐      ┌──────────────┐
-│  Telegram   │─────▶│   Bot API    │─────▶│   Backend    │
-│   Client    │      │  (aiogram)   │      │  (FastAPI)   │
-└─────────────┘      └──────────────┘      └──────────────┘
-       │                                           │
-       │                                           │
-       ▼                                           ▼
-┌─────────────┐                            ┌──────────────┐
-│   Web App   │───────────────────────────▶│  PostgreSQL  │
-│   (React)   │                            │   + Redis    │
-└─────────────┘                            └──────────────┘
-```
 
-## 🚀 Быстрый старт
+## Backend stack
 
-### Предварительные требования
+- FastAPI and Uvicorn
+- aiogram 3
+- SQLAlchemy 2 and Alembic
+- PostgreSQL with asyncpg
+- Redis
+- Pydantic 2
+- JWT-compatible security utilities
 
-- Docker и Docker Compose
-- Telegram Bot Token (получить у [@BotFather](https://t.me/BotFather))
-- Node.js 18+ и Python 3.10+ (для разработки без Docker)
+## Frontend stack
 
-### Установка
+- React 18
+- TypeScript
+- Vite
+- Telegram Web App SDK
+- React Query
+- React Hook Form
+- drag-and-drop UI
+- Tailwind CSS
 
-1. **Клонируйте репозиторий**
+## Local environment
+
+Docker Compose starts:
+
+- PostgreSQL with a health check;
+- Redis with a health check;
+- FastAPI backend;
+- Telegram bot worker;
+- React frontend.
+
+The backend and bot wait for healthy database and Redis services before startup.
+
+## Quick start
+
+### Requirements
+
+- Docker and Docker Compose
+- Telegram bot token from BotFather
+
+### Run
+
 ```bash
-git clone <your-repo-url>
-cd website
-```
-
-2. **Создайте .env файл**
-```bash
+git clone https://github.com/downmeansoff/telegram-wishlist-bot.git
+cd telegram-wishlist-bot
 cp .env.example .env
 ```
 
-3. **Настройте переменные окружения**
+Configure at least:
 
-Откройте `.env` и заполните:
 ```env
-TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
-SECRET_KEY=generate_random_32_char_string
-POSTGRES_PASSWORD=your_secure_password
+TELEGRAM_BOT_TOKEN=your_bot_token
+SECRET_KEY=generate_a_strong_secret
+POSTGRES_PASSWORD=choose_a_password
 ```
 
-Для генерации SECRET_KEY:
+Start the stack:
+
 ```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
+docker compose up -d --build
 ```
 
-4. **Запустите проект**
+Apply database migrations:
+
 ```bash
-docker-compose up -d
+docker compose exec backend alembic upgrade head
 ```
 
-5. **Примените миграции базы данных**
-```bash
-docker-compose exec backend alembic upgrade head
-```
+Services:
 
-6. **Готово! 🎉**
+- Web App: `http://localhost:3000`
+- API: `http://localhost:8000`
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
-- 🤖 Bot: Найдите вашего бота в Telegram
-- 🌐 Web App: http://localhost:3000
-- 📡 API: http://localhost:8000
-- 📚 API Docs: http://localhost:8000/docs
+## Repository structure
 
-## 📁 Структура проекта
-
-```
-website/
-├── backend/                 # Python Backend
+```text
+telegram-wishlist-bot/
+├── backend/
 │   ├── app/
-│   │   ├── api/            # FastAPI endpoints
-│   │   ├── bot/            # Telegram bot handlers
-│   │   ├── core/           # Config, security, database
-│   │   ├── models/         # SQLAlchemy models
-│   │   ├── schemas/        # Pydantic schemas
-│   │   ├── services/       # Business logic
-│   │   └── main.py         # FastAPI app
-│   ├── alembic/            # Database migrations
+│   │   ├── api/
+│   │   ├── bot/
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   ├── alembic/
 │   ├── requirements.txt
 │   └── Dockerfile
-│
-├── frontend/               # React Web App
+├── frontend/
 │   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── services/      # API services
-│   │   ├── hooks/         # Custom hooks
-│   │   ├── utils/         # Utilities
-│   │   └── App.tsx
 │   ├── package.json
 │   └── Dockerfile.dev
-│
 ├── docker-compose.yml
-├── .env.example
-└── README.md
+└── .env.example
 ```
 
-## 🛠️ Разработка
+## Database domains
 
-### Backend (без Docker)
+- users
+- wishes
+- categories
+- groups and group members
+- reservations
+- notifications
+
+## Production deployment model
+
+The backend can be deployed to a container platform such as Railway or Render with managed PostgreSQL and environment-based configuration. The frontend can be deployed separately to Vercel or Netlify.
+
+Recommended production requirements:
+
+- HTTPS-only Web App URL;
+- Telegram init-data validation;
+- secrets stored outside the repository;
+- database backups;
+- webhook-based bot delivery;
+- structured logs and monitoring;
+- migrations executed as a controlled release step.
+
+## Backup example
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# Запустите PostgreSQL и Redis локально или через Docker
-docker-compose up -d postgres redis
-
-# Миграции
-alembic upgrade head
-
-# Запустите API
-uvicorn app.main:app --reload
-
-# В отдельном терминале запустите бота
-python -m app.bot.main
+docker compose exec postgres pg_dump -U wishlist_user wishlist_db > backup.sql
 ```
 
-### Frontend (без Docker)
+Restore:
 
 ```bash
-cd frontend
-npm install
-npm start
+docker compose exec -T postgres psql -U wishlist_user wishlist_db < backup.sql
 ```
 
-### Создание новой миграции
+## Security considerations
 
-```bash
-docker-compose exec backend alembic revision --autogenerate -m "Description"
-docker-compose exec backend alembic upgrade head
-```
+- Telegram Web App init-data validation
+- environment-based secrets
+- CORS configuration
+- input validation through Pydantic
+- ORM-based database access
+- React output escaping
+- rate-limiting support
 
-## 🔧 Конфигурация бота
+## Roadmap
 
-### Создание бота в BotFather
+- payment integrations
+- AI-assisted gift recommendations
+- calendar integrations
+- PDF export
+- dark theme
+- multilingual interface
 
-1. Найдите [@BotFather](https://t.me/BotFather) в Telegram
-2. Отправьте `/newbot`
-3. Следуйте инструкциям
-4. Скопируйте токен в `.env`
+## License
 
-### Настройка Menu Button (для Web App)
-
-```bash
-# Отправьте BotFather:
-/mybots
-# Выберите вашего бота
-# Menu Button -> Configure Menu Button -> URL
-# Введите: https://your-domain.com
-```
-
-## 🌐 Деплой в продакшн
-
-### Backend (Railway/Render)
-
-1. Создайте PostgreSQL базу данных
-2. Добавьте переменные окружения:
-   - `DATABASE_URL`
-   - `TELEGRAM_BOT_TOKEN`
-   - `SECRET_KEY`
-   - `WEB_APP_URL`
-   - `ENVIRONMENT=production`
-
-3. Деплой:
-```bash
-# Railway
-railway up
-
-# Render
-# Подключите GitHub репозиторий и настройте build command:
-# Build: pip install -r requirements.txt
-# Start: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
-
-### Frontend (Vercel/Netlify)
-
-```bash
-# Vercel
-cd frontend
-vercel --prod
-
-# Netlify
-npm run build
-netlify deploy --prod --dir=build
-```
-
-### Настройка Webhook (опционально)
-
-Для продакшна рекомендуется использовать webhook вместо polling:
-
-```python
-# В .env
-TELEGRAM_BOT_WEBHOOK_URL=https://your-backend-domain.com/api/webhook
-
-# Bot автоматически настроит webhook при запуске
-```
-
-## 📊 База данных
-
-### Схема
-
-- **users** - Пользователи Telegram
-- **wishes** - Желания пользователей
-- **categories** - Категории желаний
-- **groups** - Группы друзей/семьи
-- **group_members** - Участники групп
-- **reservations** - Бронирования подарков
-- **notifications** - Уведомления
-
-### Резервное копирование
-
-```bash
-# Backup
-docker-compose exec postgres pg_dump -U wishlist_user wishlist_db > backup.sql
-
-# Restore
-docker-compose exec -T postgres psql -U wishlist_user wishlist_db < backup.sql
-```
-
-## 🧪 Тестирование
-
-```bash
-# Backend tests
-cd backend
-pytest
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-## 📝 API Документация
-
-После запуска проекта документация доступна:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-
-## 🔐 Безопасность
-
-- ✅ Валидация Telegram WebApp initData
-- ✅ CORS настройки
-- ✅ Rate limiting
-- ✅ SQL injection защита (SQLAlchemy ORM)
-- ✅ XSS защита (React автоэскейпинг)
-- ✅ Хеширование паролей (для будущих фич)
-
-## 🤝 Содействие
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 Лицензия
-
-MIT License - см. [LICENSE](LICENSE)
-
-## 🆘 Поддержка
-
-- 📧 Email: support@example.com
-- 💬 Telegram: @your_support_channel
-- 🐛 Issues: GitHub Issues
-
-## 🎯 Roadmap
-
-- [ ] Интеграция с платежными системами
-- [ ] Мобильные приложения (React Native)
-- [ ] AI рекомендации подарков
-- [ ] Интеграция с календарями (Google Calendar)
-- [ ] Экспорт в PDF
-- [ ] Темная тема
-- [ ] Мультиязычность
-
----
-
-Сделано с ❤️ для управления желаниями
+MIT License
